@@ -1,11 +1,28 @@
-const fs = require('fs');
+export function contaPalavras(texto) {
+  const paragrafos = extraiParagrafos(texto);
+  const contagem = paragrafos.flatMap((paragrafo) => {
+    if (!paragrafo) return [];
+    return verificaPalavrasDuplicadas(paragrafo);
+  });
+  return contagem;
+}
 
-//Pegar o caminho do arquivo
-const caminhoArquivo = process.argv;
-const link = caminhoArquivo[2];
+function extraiParagrafos(texto) {
+  return texto.toLowerCase().split("\n");
+}
 
-fs.readFile('./arquivos/texto-web.txt', 'utf-8', (erro, texto) => {
-    console.log(texto);
-})
+function limpaPalavras(palavra) {
+  return palavra.replace(/[\'.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+}
 
-// console.log(link);
+function verificaPalavrasDuplicadas(texto) {
+  const listaPalavras = texto.split(" ");
+  const resultado = {};
+  listaPalavras.forEach((palavra) => {
+    if (palavra.length >= 3) {
+      const palavraLimpa = limpaPalavras(palavra);
+      resultado[palavraLimpa] = (resultado[palavraLimpa] || 0) + 1;
+    }
+  });
+  return resultado;
+}
